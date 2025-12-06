@@ -2,18 +2,15 @@ const express = require("express");
 const router = express.Router();
 const Appointment = require("../models/Appointment");
 const User = require("../models/User");
+const auth = require("../middleware/authMiddleware"); // <--- IMPORT MIDDLEWARE
 
 // @route   GET /api/patient/available-slots
 // @desc    Get slots with optional filters (Date & Sex)
-router.get("/available-slots", async (req, res) => {
+// @access  Protected (User must be logged in)
+router.get("/available-slots", auth, async (req, res) => {
   try {
     const { date, sex } = req.query;
 
-    console.log("--------------------------------");
-    console.log("🔍 DEBUG LOG:");
-    console.log("1. Incoming Query Params:", req.query);
-
-    // Start with a basic query: Only show available slots
     let query = { status: "available" };
 
     // --- FILTER 1: DATE ---
@@ -32,21 +29,16 @@ router.get("/available-slots", async (req, res) => {
 
     // --- FILTER 2: SEX ---
     if (sex) {
-      // Use Regex to match "female", "Female", "FEMALE"
       const regex = new RegExp(`^${sex}$`, "i");
-
-      // Find doctors matching the sex
-      const doctors = await User.find({ role: "doctor", sex: sex });
+      const doctors = await User.find({ role: "doctor", sex: regex });
       const doctorIds = doctors.map((doc) => doc._id);
-
-      // Filter appointments by these Doctor IDs
       query.doctorId = { $in: doctorIds };
     }
 
     const slots = await Appointment.find(query).populate(
       "doctorId",
       "name sex profilePicture"
-    ); // Added profilePicture here
+    );
 
     res.json(slots);
   } catch (err) {
@@ -57,8 +49,10 @@ router.get("/available-slots", async (req, res) => {
 
 // @route   POST /api/patient/book
 // @desc    Book a specific slot
-router.post("/book", async (req, res) => {
-  const { slotId, patientId } = req.body;
+// @access  Protected (Uses JWT to identify patient)
+router.post("/book", auth, async (req, res) => {
+  // We ONLY need slotId. We get patientId from the Token.
+  const { slotId } = req.body;
 
   try {
     let appointment = await Appointment.findById(slotId);
@@ -73,8 +67,10 @@ router.post("/book", async (req, res) => {
         .json({ msg: "Sorry, this slot is already booked." });
     }
 
+    // --- CRITICAL SECURITY UPDATE ---
+    // Instead of trusting req.body.patientId, we take it from the verified token
     appointment.status = "booked";
-    appointment.patientId = patientId;
+    appointment.patientId = req.user.id;
     appointment.meetingLink = `https://meet.jit.si/hackathon_telehealth_${appointment._id}`;
 
     await appointment.save();
@@ -86,12 +82,14 @@ router.post("/book", async (req, res) => {
   }
 });
 
-// @route   GET /api/patient/my-appointments/:patientId
+// @route   GET /api/patient/my-appointments
 // @desc    See the appointments YOU have booked
-router.get("/my-appointments/:patientId", async (req, res) => {
+// @access  Protected
+router.get("/my-appointments", auth, async (req, res) => {
   try {
+    // We search for appointments where patientId matches the logged-in user
     const appointments = await Appointment.find({
-      patientId: req.params.patientId,
+      patientId: req.user.id,
     }).populate("doctorId", "name email sex profilePicture");
 
     res.json(appointments);

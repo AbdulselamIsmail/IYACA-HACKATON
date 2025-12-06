@@ -33,6 +33,16 @@ app.get("/test-models", async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
+const verifyToken = require("./middleware/authMiddleware");
+
+// --- PROTECTED ROUTE TEST ---
+app.get("/api/secret", verifyToken, (req, res) => {
+  res.json({
+    msg: "Welcome to the secret area!",
+    user: req.user, // This will show the data we extracted from the token
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

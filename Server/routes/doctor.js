@@ -1,27 +1,28 @@
 const express = require("express");
 const router = express.Router();
 const Appointment = require("../models/Appointment");
-const User = require("../models/User");
+const auth = require("../middleware/authMiddleware");
+
+// --- MIDDLEWARE: Check if user is actually a doctor ---
+const isDoctor = (req, res, next) => {
+  // req.user is populated by the 'auth' middleware
+  if (req.user.role !== "doctor") {
+    return res.status(403).json({ msg: "Access Denied. Doctors only." });
+  }
+  next();
+};
 
 // @route   POST /api/doctor/add-slot
 // @desc    Doctor creates a new "Available" time slot
-router.post("/add-slot", async (req, res) => {
-  const { doctorId, date } = req.body;
+// @access  Protected (Doctor only)
+router.post("/add-slot", auth, isDoctor, async (req, res) => {
+  const { date } = req.body; // We DO NOT ask for doctorId anymore
 
   try {
-    // 1. Validation: Does this doctor exist?
-    const doctor = await User.findById(doctorId);
-    if (!doctor || doctor.role !== "doctor") {
-      return res
-        .status(401)
-        .json({ msg: "Unauthorized: User is not a doctor" });
-    }
-
-    // 2. Create the Slot
-    // Note: We don't need patientId or meetingLink yet, those come later!
+    // We get doctorId securely from the token
     const newSlot = new Appointment({
-      doctorId,
-      date: new Date(date), // Ensure string is converted to Date object
+      doctorId: req.user.id,
+      date: new Date(date),
       status: "available",
     });
 
@@ -34,15 +35,45 @@ router.post("/add-slot", async (req, res) => {
   }
 });
 
-// @route   GET /api/doctor/my-slots/:doctorId
-// @desc    See all slots (both open and booked) for this doctor
-router.get("/my-slots/:doctorId", async (req, res) => {
+// @route   GET /api/doctor/my-slots
+// @desc    See all slots (Booked & Available) for the logged-in doctor
+// @access  Protected (Doctor only)
+router.get("/my-slots", auth, isDoctor, async (req, res) => {
   try {
-    const slots = await Appointment.find({ doctorId: req.params.doctorId })
-      .populate("patientId", "name email") // If booked, show who the patient is!
-      .sort({ date: 1 }); // Sort by earliest date first
+    // Securely find slots for THIS doctor only
+    const slots = await Appointment.find({ doctorId: req.user.id })
+      .populate("patientId", "name email sex age profilePicture") // Show patient details if booked
+      .sort({ date: 1 }); // Earliest first
 
     res.json(slots);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route   PUT /api/doctor/complete-appointment/:id
+// @desc    Mark an appointment as completed
+// @access  Protected (Doctor only)
+router.put("/complete-appointment/:id", auth, isDoctor, async (req, res) => {
+  try {
+    let appointment = await Appointment.findById(req.params.id);
+
+    if (!appointment) {
+      return res.status(404).json({ msg: "Appointment not found" });
+    }
+
+    // Security Check: Is this YOUR appointment?
+    if (appointment.doctorId.toString() !== req.user.id) {
+      return res
+        .status(401)
+        .json({ msg: "Not authorized to modify this appointment" });
+    }
+
+    appointment.status = "completed";
+    await appointment.save();
+
+    res.json({ msg: "Appointment completed", appointment });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

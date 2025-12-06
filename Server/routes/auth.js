@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs"); // <--- FIX 1: Added missing import
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 
 // REGISTER
 router.post("/register", async (req, res) => {
@@ -50,27 +51,49 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// LOGIN
+// LOGIN (Updated with JWT)
 router.post("/login", async (req, res) => {
   try {
-    // 1. Find user by email
     const user = await User.findOne({ email: req.body.email });
     if (!user) return res.status(404).json("User not found!");
 
-    // 2. Compare entered password with stored Hash
     const validPassword = await bcrypt.compare(
       req.body.password,
       user.password
     );
-
     if (!validPassword) return res.status(400).json("Wrong password!");
 
-    // 3. Send back user data (excluding the hash)
+    // --- 2. GENERATE TOKEN ---
+    // We put the User ID and Role inside the token.
+    const token = jwt.sign(
+      { id: user._id, role: user.role }, // Payload (Data inside token)
+      process.env.JWT_SECRET, // Secret Key from .env
+      { expiresIn: "5d" } // Expiration (5 days)
+    );
+
     const { password, ...others } = user._doc;
-    res.status(200).json(others);
+
+    // --- 3. SEND TOKEN TO USER ---
+    res.status(200).json({ ...others, token });
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ error: err.message });
   }
 });
+
+// @route   GET /api/auth/user
+// @desc    Get user data (Load User)
+router.get(
+  "/user",
+  require("../middleware/authMiddleware"),
+  async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id).select("-password");
+      res.json(user);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error");
+    }
+  }
+);
 
 module.exports = router;
