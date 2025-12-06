@@ -2,25 +2,25 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User"); // Ensure you have models/User.js
 
-// @route   POST /api/auth/register
-// @desc    Register a new user
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password, role, specialization } = req.body;
+    // 1. UPDATE THIS LINE: Add sex, age, profilePicture to the extraction
+    const { name, email, password, role, sex, age, profilePicture } = req.body;
 
-    // Check if user exists
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ msg: "User already exists" });
     }
 
-    // Create new user
+    // 2. UPDATE THIS BLOCK: Pass the new fields to the new user
     user = new User({
       name,
       email,
       password,
-      role, // 'doctor' or 'patient'
-      specialization,
+      role,
+      sex, // <--- New
+      age, // <--- New
+      profilePicture, // <--- New
     });
 
     await user.save();

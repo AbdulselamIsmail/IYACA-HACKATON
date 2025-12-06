@@ -16,12 +16,23 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["doctor", "patient"], // Only allow these two values
+    enum: ["doctor", "patient"],
     default: "patient",
   },
-  // Specific to doctors (optional for patients)
-  specialization: {
+  // --- NEW FIELDS ---
+  sex: {
     type: String,
+    enum: ["male", "female"], // You can remove this array if you want it open-ended
+    required: true, // Force them to select one
+  },
+  profilePicture: {
+    type: String, // We will store a URL string here (not the actual image file)
+    default: "https://via.placeholder.com/150", // A default gray image if they don't have one
+  },
+  age: {
+    type: Number,
+    // validation: Only required if role is patient? For a hackathon, keep it simple:
+    required: false,
   },
 });
 

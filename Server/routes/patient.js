@@ -4,15 +4,49 @@ const Appointment = require("../models/Appointment");
 const User = require("../models/User");
 
 // @route   GET /api/patient/available-slots
-// @desc    Get ALL slots that are open for booking
+// @desc    Get slots with optional filters (Date & Sex)
 router.get("/available-slots", async (req, res) => {
   try {
-    // Find all appointments where status is "available"
-    // .populate('doctorId', 'name specialization') replaces the ID with actual doctor details
-    const slots = await Appointment.find({ status: "available" }).populate(
+    const { date, sex } = req.query;
+
+    console.log("--------------------------------");
+    console.log("🔍 DEBUG LOG:");
+    console.log("1. Incoming Query Params:", req.query);
+
+    // Start with a basic query: Only show available slots
+    let query = { status: "available" };
+
+    // --- FILTER 1: DATE ---
+    if (date) {
+      const startOfDay = new Date(date);
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date(date);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      query.date = {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      };
+    }
+
+    // --- FILTER 2: SEX ---
+    if (sex) {
+      // Use Regex to match "female", "Female", "FEMALE"
+      const regex = new RegExp(`^${sex}$`, "i");
+
+      // Find doctors matching the sex
+      const doctors = await User.find({ role: "doctor", sex: sex });
+      const doctorIds = doctors.map((doc) => doc._id);
+
+      // Filter appointments by these Doctor IDs
+      query.doctorId = { $in: doctorIds };
+    }
+
+    const slots = await Appointment.find(query).populate(
       "doctorId",
-      "name specialization"
-    );
+      "name sex profilePicture"
+    ); // Added profilePicture here
 
     res.json(slots);
   } catch (err) {
@@ -27,28 +61,20 @@ router.post("/book", async (req, res) => {
   const { slotId, patientId } = req.body;
 
   try {
-    // 1. Find the appointment by ID
     let appointment = await Appointment.findById(slotId);
 
-    // 2. Safety Check: Does it exist?
     if (!appointment) {
       return res.status(404).json({ msg: "Appointment not found" });
     }
 
-    // 3. Security Check: Is it already booked?
-    // This prevents a "Race Condition" if two users click book at the same time
     if (appointment.status !== "available") {
       return res
         .status(400)
         .json({ msg: "Sorry, this slot is already booked." });
     }
 
-    // 4. Update the Appointment
     appointment.status = "booked";
     appointment.patientId = patientId;
-
-    // 5. Generate the Unique Video Room Link
-    // We create a predictable room name based on the ID
     appointment.meetingLink = `https://meet.jit.si/hackathon_telehealth_${appointment._id}`;
 
     await appointment.save();
@@ -66,7 +92,7 @@ router.get("/my-appointments/:patientId", async (req, res) => {
   try {
     const appointments = await Appointment.find({
       patientId: req.params.patientId,
-    }).populate("doctorId", "name email"); // Show doctor info to the patient
+    }).populate("doctorId", "name email sex profilePicture");
 
     res.json(appointments);
   } catch (err) {
