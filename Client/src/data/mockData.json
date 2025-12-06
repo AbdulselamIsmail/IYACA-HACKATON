@@ -1,0 +1,432 @@
+{
+  "therapists": [
+    {
+      "id": "t1",
+      "name": "Dr. Ayşe Yılmaz",
+      "school": "Ankara Üniversitesi Psikoloji",
+      "email": "ayse@example.com",
+      "city": "Ankara",
+      "specialty": "Bilişsel Davranışçı Terapi",
+      "available": {
+        "monday": ["09:00-11:00", "14:00-17:00"],
+        "wednesday": ["10:00-12:00", "15:00-18:00"],
+        "friday": ["09:00-12:00"]
+      },
+      "rating": 4.8,
+      "bio": "Bilişsel davranışçı terapi odaklı, ergen ve yetişkin çalışmaları.",
+      "profilePic": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    },
+    {
+      "id": "t2",
+      "name": "Uzm. Psk. Mehmet Kaya",
+      "school": "İstanbul Üniversitesi Psikoloji",
+      "email": "mehmet@example.com",
+      "city": "İstanbul",
+      "specialty": "Aile Terapisi",
+      "available": {
+        "tuesday": ["10:00-13:00", "15:00-18:00"],
+        "thursday": ["09:00-12:00", "14:00-16:00"],
+        "saturday": ["10:00-14:00"]
+      },
+      "rating": 4.9,
+      "bio": "Aile ve çift terapisi uzmanı, 8 yıllık deneyim.",
+      "profilePic": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    },
+    {
+      "id": "t3",
+      "name": "Dr. Zeynep Demir",
+      "school": "Hacettepe Üniversitesi Psikoloji",
+      "email": "zeynep@example.com",
+      "city": "Ankara",
+      "specialty": "Travma Terapisi",
+      "available": {
+        "monday": ["13:00-17:00"],
+        "wednesday": ["09:00-12:00"],
+        "friday": ["14:00-18:00"]
+      },
+      "rating": 4.7,
+      "bio": "EMDR sertifikalı, travma ve kayıp odaklı çalışmalar.",
+      "profilePic": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    },
+    {
+      "id": "t4",
+      "name": "Uzm. Psk. Can Öztürk",
+      "school": "Ege Üniversitesi Psikoloji",
+      "email": "can@example.com",
+      "city": "İzmir",
+      "specialty": "Kaygı Bozuklukları",
+      "available": {
+        "tuesday": ["09:00-12:00"],
+        "thursday": ["13:00-17:00"],
+        "saturday": ["09:00-13:00"]
+      },
+      "rating": 4.6,
+      "bio": "Anksiyete ve panik bozuklukları konusunda uzman.",
+      "profilePic": "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    },
+    {
+      "id": "t5",
+      "name": "Dr. Elif Arslan",
+      "school": "Boğaziçi Üniversitesi Psikoloji",
+      "email": "elif@example.com",
+      "city": "İstanbul",
+      "specialty": "Depresyon",
+      "available": {
+        "monday": ["10:00-14:00"],
+        "wednesday": ["14:00-18:00"],
+        "friday": ["09:00-13:00"]
+      },
+      "rating": 4.9,
+      "bio": "Depresyon ve mood bozuklukları uzmanı, mindfulness yaklaşımı.",
+      "profilePic": "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    },
+    {
+      "id": "t6",
+      "name": "Uzm. Psk. Ahmet Yıldız",
+      "school": "ODTÜ Psikoloji",
+      "email": "ahmet@example.com",
+      "city": "Ankara",
+      "specialty": "Ergen Psikolojisi",
+      "available": {
+        "tuesday": ["14:00-18:00"],
+        "thursday": ["09:00-13:00"]
+      },
+      "rating": 4.5,
+      "bio": "Ergen ve genç yetişkin psikolojisi, kimlik gelişimi.",
+      "profilePic": "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    },
+    {
+      "id": "t7",
+      "name": "Dr. Selin Güneş",
+      "school": "Marmara Üniversitesi Psikoloji",
+      "email": "selin@example.com",
+      "city": "İstanbul",
+      "specialty": "İlişki Terapisi",
+      "available": {
+        "monday": ["09:00-12:00", "15:00-18:00"],
+        "friday": ["10:00-14:00"]
+      },
+      "rating": 4.8,
+      "bio": "Romantik ilişkiler ve bağlanma stilleri konusunda uzman.",
+      "profilePic": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    },
+    {
+      "id": "t8",
+      "name": "Uzm. Psk. Deniz Korkmaz",
+      "school": "Dokuz Eylül Üniversitesi Psikoloji",
+      "email": "deniz@example.com",
+      "city": "İzmir",
+      "specialty": "Stres Yönetimi",
+      "available": {
+        "wednesday": ["09:00-13:00"],
+        "thursday": ["14:00-18:00"],
+        "saturday": ["10:00-14:00"]
+      },
+      "rating": 4.7,
+      "bio": "İş stresi ve tükenmişlik sendromu uzmanı.",
+      "profilePic": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    },
+    {
+      "id": "t9",
+      "name": "Dr. Emre Çelik",
+      "school": "Gazi Üniversitesi Psikoloji",
+      "email": "emre@example.com",
+      "city": "Ankara",
+      "specialty": "OKB Tedavisi",
+      "available": {
+        "tuesday": ["09:00-12:00", "14:00-17:00"],
+        "friday": ["10:00-14:00"]
+      },
+      "rating": 4.6,
+      "bio": "Obsesif kompulsif bozukluk ve fobiler konusunda uzman.",
+      "profilePic": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    },
+    {
+      "id": "t10",
+      "name": "Uzm. Psk. Buse Aydın",
+      "school": "Çukurova Üniversitesi Psikoloji",
+      "email": "buse@example.com",
+      "city": "Adana",
+      "specialty": "Çocuk Psikolojisi",
+      "available": {
+        "monday": ["14:00-18:00"],
+        "wednesday": ["09:00-13:00"],
+        "saturday": ["09:00-12:00"]
+      },
+      "rating": 4.9,
+      "bio": "Çocuk ve oyun terapisi uzmanı, ebeveyn danışmanlığı.",
+      "profilePic": "https://images.unsplash.com/photo-1598550874175-4d0ef436c909?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    },
+    {
+      "id": "t11",
+      "name": "Dr. Kaan Şahin",
+      "school": "Uludağ Üniversitesi Psikoloji",
+      "email": "kaan@example.com",
+      "city": "Bursa",
+      "specialty": "Bağımlılık",
+      "available": {
+        "tuesday": ["10:00-14:00"],
+        "thursday": ["15:00-19:00"]
+      },
+      "rating": 4.5,
+      "bio": "Madde ve davranışsal bağımlılıklar konusunda deneyimli.",
+      "profilePic": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    },
+    {
+      "id": "t12",
+      "name": "Uzm. Psk. Merve Özkan",
+      "school": "Akdeniz Üniversitesi Psikoloji",
+      "email": "merve@example.com",
+      "city": "Antalya",
+      "specialty": "Yeme Bozuklukları",
+      "available": {
+        "monday": ["09:00-13:00"],
+        "wednesday": ["14:00-18:00"],
+        "friday": ["10:00-14:00"]
+      },
+      "rating": 4.8,
+      "bio": "Yeme bozuklukları ve beden imajı konularında uzman.",
+      "profilePic": "https://images.unsplash.com/photo-1614608682850-e0d6ed316d47?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    },
+    {
+      "id": "t13",
+      "name": "Dr. Oğuz Eren",
+      "school": "Kadir Has Üniversitesi Psikoloji",
+      "email": "oguz@example.com",
+      "city": "İstanbul",
+      "specialty": "LGBTQ+ Danışmanlık",
+      "available": {
+        "tuesday": ["13:00-17:00"],
+        "thursday": ["09:00-13:00"],
+        "saturday": ["11:00-15:00"]
+      },
+      "rating": 4.7,
+      "bio": "LGBTQ+ bireylere yönelik kapsayıcı terapi yaklaşımı.",
+      "profilePic": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    },
+    {
+      "id": "t14",
+      "name": "Uzm. Psk. Ceren Aktaş",
+      "school": "Bilkent Üniversitesi Psikoloji",
+      "email": "ceren@example.com",
+      "city": "Ankara",
+      "specialty": "Kariyer Danışmanlığı",
+      "available": {
+        "monday": ["10:00-14:00"],
+        "wednesday": ["15:00-19:00"]
+      },
+      "rating": 4.6,
+      "bio": "Kariyer geçişleri ve iş-yaşam dengesi konularında uzman.",
+      "profilePic": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    },
+    {
+      "id": "t15",
+      "name": "Dr. Burak Polat",
+      "school": "Koç Üniversitesi Psikoloji",
+      "email": "burak@example.com",
+      "city": "İstanbul",
+      "specialty": "Yas ve Kayıp",
+      "available": {
+        "tuesday": ["09:00-13:00"],
+        "thursday": ["14:00-18:00"],
+        "friday": ["10:00-14:00"]
+      },
+      "rating": 4.9,
+      "bio": "Yas süreci ve kayıp terapisi konusunda uzmanlaşmış.",
+      "profilePic": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
+      "verified": true
+    }
+  ],
+  "comments": [
+    {"id": "c1", "name": "M. K.", "message": "Sıcak bir platform, teşekkürler. İlk seansımda çok rahat hissettim.", "date": "2025-11-03", "rating": 5},
+    {"id": "c2", "name": "A. Y.", "message": "Terapistimi bulmak çok kolay oldu. Randevu sistemi harika çalışıyor.", "date": "2025-11-05", "rating": 5},
+    {"id": "c3", "name": "E. S.", "message": "Gönüllü terapistlerin kalitesi gerçekten etkileyici.", "date": "2025-11-08", "rating": 5},
+    {"id": "c4", "name": "D. Ö.", "message": "Online görüşme deneyimi beklemediğim kadar iyi.", "date": "2025-11-10", "rating": 4},
+    {"id": "c5", "name": "S. A.", "message": "Maddi durumum yüzünden terapi alamıyordum. Bu platform hayat kurtarıcı.", "date": "2025-11-12", "rating": 5},
+    {"id": "c6", "name": "C. T.", "message": "Terapistim çok anlayışlı ve profesyonel biriydi.", "date": "2025-11-14", "rating": 5},
+    {"id": "c7", "name": "B. K.", "message": "Arayüz çok kullanışlı, randevu almak dakikalar içinde halloluyor.", "date": "2025-11-16", "rating": 4},
+    {"id": "c8", "name": "N. Y.", "message": "Gizlilik konusunda kendimi güvende hissettim.", "date": "2025-11-18", "rating": 5},
+    {"id": "c9", "name": "H. D.", "message": "İlk kez terapi alıyorum, başlangıç için mükemmel bir platform.", "date": "2025-11-20", "rating": 5},
+    {"id": "c10", "name": "Z. E.", "message": "Terapistimle uyumum çok iyi, devam edeceğim.", "date": "2025-11-22", "rating": 5},
+    {"id": "c11", "name": "L. M.", "message": "Görüntülü görüşme kalitesi yüksek, teknik sorun yaşamadım.", "date": "2025-11-24", "rating": 4},
+    {"id": "c12", "name": "K. Ş.", "message": "Blog yazıları da çok faydalı, teşekkürler.", "date": "2025-11-26", "rating": 5},
+    {"id": "c13", "name": "P. A.", "message": "Randevu iptal süreci bile çok kolay.", "date": "2025-11-27", "rating": 4},
+    {"id": "c14", "name": "T. B.", "message": "Terapistler gerçekten gönüllü mü diye şüpheliydim ama evet, harikalar!", "date": "2025-11-28", "rating": 5},
+    {"id": "c15", "name": "G. N.", "message": "Haftalık seanslarımı dört gözle bekliyorum artık.", "date": "2025-11-29", "rating": 5},
+    {"id": "c16", "name": "R. F.", "message": "Mobil uyumluluk mükemmel, telefondan kolayca kullanıyorum.", "date": "2025-11-30", "rating": 5},
+    {"id": "c17", "name": "V. C.", "message": "Diploma doğrulama sistemi güven veriyor.", "date": "2025-12-01", "rating": 5},
+    {"id": "c18", "name": "İ. H.", "message": "Terapistimin tavsiye ettiği kaynaklar çok faydalı oldu.", "date": "2025-12-02", "rating": 4},
+    {"id": "c19", "name": "Ü. O.", "message": "Seans hatırlatmaları için bildirimler harika.", "date": "2025-12-03", "rating": 5},
+    {"id": "c20", "name": "Ş. P.", "message": "Destek ekibi sorularıma hızla cevap verdi.", "date": "2025-12-04", "rating": 5},
+    {"id": "c21", "name": "F. G.", "message": "Not alma özelliği seansları daha verimli kılıyor.", "date": "2025-12-04", "rating": 4},
+    {"id": "c22", "name": "J. L.", "message": "Farklı uzmanlık alanlarından seçenek sunmaları çok iyi.", "date": "2025-12-04", "rating": 5},
+    {"id": "c23", "name": "W. X.", "message": "Terapistimin yaklaşımı tam bana göre.", "date": "2025-12-05", "rating": 5},
+    {"id": "c24", "name": "Q. R.", "message": "Güvenli ve huzurlu bir ortam.", "date": "2025-12-05", "rating": 5},
+    {"id": "c25", "name": "Y. Z.", "message": "Randevu sistemi esnek, uygun saatler bulmak kolay.", "date": "2025-12-05", "rating": 4},
+    {"id": "c26", "name": "O. Ç.", "message": "Platform sayesinde ilk adımı atmaya cesaret edebildim.", "date": "2025-12-05", "rating": 5},
+    {"id": "c27", "name": "U. İ.", "message": "Terapistlerle olan iletişim çok açık ve net.", "date": "2025-12-05", "rating": 5},
+    {"id": "c28", "name": "Ö. Ğ.", "message": "Herkesin erişebileceği bir hizmet, bravo!", "date": "2025-12-06", "rating": 5},
+    {"id": "c29", "name": "I. A.", "message": "Görüşme sonrası özet alabilmek harika bir özellik.", "date": "2025-12-06", "rating": 4},
+    {"id": "c30", "name": "E. Ü.", "message": "Bu platforma minnettar kalacağım, hayatımı değiştirdi.", "date": "2025-12-06", "rating": 5}
+  ],
+  "blogPosts": [
+    {
+      "id": "b1",
+      "title": "Anksiyete ile Başa Çıkmanın 5 Etkili Yolu",
+      "summary": "Günlük yaşamda anksiyeteyi yönetmek için pratik stratejiler.",
+      "content": "Anksiyete modern yaşamın kaçınılmaz bir parçası haline geldi. Ancak doğru tekniklerle bu duyguyu yönetmek mümkün. İşte size yardımcı olacak 5 etkili yöntem:\n\n1. Derin Nefes Egzersizleri: 4-7-8 tekniğini deneyin.\n2. Mindfulness Meditasyonu: Günde 10 dakika bile fark yaratır.\n3. Düzenli Egzersiz: Endorfin salınımı doğal bir sakinleştirici.\n4. Uyku Düzeni: 7-8 saat kaliteli uyku şart.\n5. Sosyal Destek: Yakınlarınızla duygularınızı paylaşın.",
+      "author": "Dr. Ayşe Yılmaz",
+      "date": "2025-11-15",
+      "likes": 127,
+      "comments": [
+        {"id": "bc1", "author": "Kullanıcı A", "text": "Çok faydalı bilgiler, teşekkürler!", "date": "2025-11-16"},
+        {"id": "bc2", "author": "Kullanıcı B", "text": "Nefes egzersizi gerçekten işe yarıyor.", "date": "2025-11-17"}
+      ]
+    },
+    {
+      "id": "b2",
+      "title": "İlişkilerde Sağlıklı Sınırlar Koymak",
+      "summary": "Sınır koymak neden önemli ve nasıl yapılır?",
+      "content": "Sağlıklı ilişkiler, sağlıklı sınırlarla başlar. Sınır koymak bencillik değil, öz bakımdır. Kendinize değer verdiğinizi gösterir ve karşı tarafın da size saygı duymasını sağlar.\n\nSınır koyarken:\n- Net ve açık olun\n- Tutarlı kalın\n- Hayır demeyi öğrenin\n- Suçluluk duymayın",
+      "author": "Uzm. Psk. Mehmet Kaya",
+      "date": "2025-11-20",
+      "likes": 89,
+      "comments": [
+        {"id": "bc3", "author": "Kullanıcı C", "text": "Bu konuda çok zorlanıyordum, aydınlatıcı oldu.", "date": "2025-11-21"}
+      ]
+    },
+    {
+      "id": "b3",
+      "title": "Travma Sonrası İyileşme Süreci",
+      "summary": "Travmadan sonra iyileşmek mümkün mü?",
+      "content": "Travma yaşamak zordur ama iyileşmek kesinlikle mümkündür. İyileşme süreci kişiden kişiye değişir. Kendinize zaman tanıyın, profesyonel destek alın ve küçük adımlarla ilerleyin.\n\nİyileşme sürecinde:\n- Duygularınızı kabul edin\n- Güvenli bir ortam oluşturun\n- Destek ağınızı güçlendirin\n- Sabırlı olun",
+      "author": "Dr. Zeynep Demir",
+      "date": "2025-11-22",
+      "likes": 156,
+      "comments": []
+    },
+    {
+      "id": "b4",
+      "title": "Çocuklarda Dijital Bağımlılık",
+      "summary": "Ekran süresi nasıl kontrol edilir?",
+      "content": "Dijital cihazlar hayatımızın ayrılmaz parçası oldu. Ancak çocuklarda aşırı ekran kullanımı gelişimsel sorunlara yol açabilir. Ebeveynler olarak sınırlar koymak ve alternatif aktiviteler sunmak önemli.",
+      "author": "Uzm. Psk. Buse Aydın",
+      "date": "2025-11-25",
+      "likes": 203,
+      "comments": [
+        {"id": "bc4", "author": "Anne M.", "text": "Çok güncel bir konu, paylaşım için teşekkürler.", "date": "2025-11-26"}
+      ]
+    },
+    {
+      "id": "b5",
+      "title": "İş Yerinde Tükenmişlik Sendromu",
+      "summary": "Burnout belirtileri ve önleme yolları.",
+      "content": "Tükenmişlik sendromu, kronik iş stresinin yönetilememesi sonucu ortaya çıkar. Yorgunluk, sinizm ve verimsizlik hissi ana belirtilerdir. Erken fark etmek ve müdahale etmek kritik öneme sahiptir.",
+      "author": "Uzm. Psk. Deniz Korkmaz",
+      "date": "2025-11-28",
+      "likes": 178,
+      "comments": [
+        {"id": "bc5", "author": "Çalışan K.", "text": "Tam da benim durumumu anlattınız.", "date": "2025-11-29"}
+      ]
+    },
+    {
+      "id": "b6",
+      "title": "Depresyonun Fiziksel Belirtileri",
+      "summary": "Depresyon sadece ruhsal değil, bedensel de kendini gösterir.",
+      "content": "Depresyon genellikle duygusal belirtileriyle bilinir ancak fiziksel belirtileri de oldukça yaygındır. Yorgunluk, uyku bozuklukları, iştah değişiklikleri ve ağrılar depresyonun bedensel yansımaları olabilir.",
+      "author": "Dr. Elif Arslan",
+      "date": "2025-11-30",
+      "likes": 145,
+      "comments": []
+    },
+    {
+      "id": "b7",
+      "title": "Ergenlik Döneminde İletişim",
+      "summary": "Gençlerle nasıl daha iyi iletişim kurulur?",
+      "content": "Ergenlik döneminde ebeveyn-çocuk iletişimi zorlaşabilir. Dinlemek, yargılamamak ve empati kurmak bu dönemde iletişimi güçlendirir. Gençlerin özerklik ihtiyacını anlamak önemlidir.",
+      "author": "Uzm. Psk. Ahmet Yıldız",
+      "date": "2025-12-01",
+      "likes": 92,
+      "comments": [
+        {"id": "bc6", "author": "Baba T.", "text": "Oğlumla iletişimimiz için çok yardımcı oldu.", "date": "2025-12-02"}
+      ]
+    },
+    {
+      "id": "b8",
+      "title": "Yas Sürecini Yaşamak",
+      "summary": "Kayıp sonrası yas süreci nasıl geçer?",
+      "content": "Yas, bir kayıp sonrası yaşanan doğal bir süreçtir. Herkes yası farklı yaşar. İnkar, öfke, pazarlık, depresyon ve kabul aşamaları sırayla yaşanmayabilir. Kendinize nazik olun.",
+      "author": "Dr. Burak Polat",
+      "date": "2025-12-03",
+      "likes": 167,
+      "comments": []
+    },
+    {
+      "id": "b9",
+      "title": "Öz Şefkat Nedir?",
+      "summary": "Kendinize karşı nazik olmayı öğrenin.",
+      "content": "Öz şefkat, zor zamanlarda kendinize bir arkadaşınıza davranır gibi davranmaktır. Kendini eleştirmek yerine anlayış göstermek, acı çekerken kendini yalnız hissetmemek öz şefkatin temelidir.",
+      "author": "Dr. Selin Güneş",
+      "date": "2025-12-04",
+      "likes": 234,
+      "comments": [
+        {"id": "bc7", "author": "Kullanıcı F.", "text": "Bu kavramı yeni öğrendim, çok değerli.", "date": "2025-12-05"}
+      ]
+    },
+    {
+      "id": "b10",
+      "title": "Stresle Başa Çıkmada Mizahın Rolü",
+      "summary": "Gülmek gerçekten en iyi ilaç mı?",
+      "content": "Araştırmalar mizahın stres hormonlarını azalttığını ve bağışıklık sistemini güçlendirdiğini gösteriyor. Günlük yaşamda mizahı korumak, zorluklarla başa çıkmada etkili bir strateji olabilir.",
+      "author": "Uzm. Psk. Can Öztürk",
+      "date": "2025-12-05",
+      "likes": 189,
+      "comments": []
+    }
+  ],
+  "appointments": [
+    {"id": "a1", "clientId": "u1", "therapistId": "t1", "dateTime": "2025-12-15T14:00:00+03:00", "status": "confirmed"},
+    {"id": "a2", "clientId": "u2", "therapistId": "t3", "dateTime": "2025-12-16T10:00:00+03:00", "status": "confirmed"},
+    {"id": "a3", "clientId": "u1", "therapistId": "t5", "dateTime": "2025-12-17T15:00:00+03:00", "status": "pending"},
+    {"id": "a4", "clientId": "u3", "therapistId": "t2", "dateTime": "2025-12-18T11:00:00+03:00", "status": "confirmed"},
+    {"id": "a5", "clientId": "u4", "therapistId": "t7", "dateTime": "2025-12-19T09:00:00+03:00", "status": "cancelled"},
+    {"id": "a6", "clientId": "u5", "therapistId": "t4", "dateTime": "2025-12-20T14:00:00+03:00", "status": "confirmed"},
+    {"id": "a7", "clientId": "u2", "therapistId": "t8", "dateTime": "2025-12-21T10:00:00+03:00", "status": "pending"},
+    {"id": "a8", "clientId": "u6", "therapistId": "t10", "dateTime": "2025-12-22T16:00:00+03:00", "status": "confirmed"}
+  ],
+  "cities": [
+    "Adana", "Ankara", "Antalya", "Bursa", "Denizli", "Diyarbakır", "Eskişehir", 
+    "Gaziantep", "İstanbul", "İzmir", "Kayseri", "Kocaeli", "Konya", "Mersin", 
+    "Muğla", "Samsun", "Trabzon"
+  ],
+  "specialties": [
+    "Bilişsel Davranışçı Terapi", "Aile Terapisi", "Travma Terapisi", "Kaygı Bozuklukları",
+    "Depresyon", "Ergen Psikolojisi", "İlişki Terapisi", "Stres Yönetimi", "OKB Tedavisi",
+    "Çocuk Psikolojisi", "Bağımlılık", "Yeme Bozuklukları", "LGBTQ+ Danışmanlık",
+    "Kariyer Danışmanlığı", "Yas ve Kayıp"
+  ],
+  "motivationalQuotes": [
+    "Her yeni gün, yeni bir başlangıçtır.",
+    "Kendinize karşı nazik olun, büyümek zaman alır.",
+    "Yardım istemek güç işaretidir.",
+    "Küçük adımlar büyük değişimlere yol açar.",
+    "Bugün kendiniz için ne yaptınız?",
+    "Duygularınız geçerli ve önemli.",
+    "İyileşmek bir süreçtir, yarış değil.",
+    "Yalnız değilsiniz, biz buradayız."
+  ]
+}

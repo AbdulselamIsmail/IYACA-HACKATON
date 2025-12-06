@@ -1,0 +1,277 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary therapeutic palette */
+    --background: 210 33% 99%;
+    --foreground: 210 50% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 50% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 50% 15%;
+
+    /* Primary - Calming dark blue */
+    --primary: 207 87% 34%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - Soft blue */
+    --secondary: 200 60% 94%;
+    --secondary-foreground: 207 87% 34%;
+
+    /* Accent - Soft green */
+    --accent: 140 40% 94%;
+    --accent-foreground: 150 50% 30%;
+
+    /* Muted */
+    --muted: 210 20% 96%;
+    --muted-foreground: 210 15% 45%;
+
+    /* Destructive */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Border and input */
+    --border: 210 25% 90%;
+    --input: 210 25% 90%;
+    --ring: 207 87% 34%;
+
+    --radius: 0.625rem;
+
+    /* Custom therapeutic colors */
+    --soft-blue: 200 60% 94%;
+    --soft-green: 140 40% 94%;
+    --calm-blue: 207 87% 34%;
+    --warm-gray: 210 15% 96%;
+    --text-primary: 210 50% 15%;
+    --text-secondary: 210 15% 45%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(200 60% 94%) 0%, hsl(140 40% 94%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
+    --gradient-button: linear-gradient(135deg, hsl(207 87% 34%) 0%, hsl(207 87% 44%) 100%);
+
+    /* Shadows */
+    --shadow-soft: 0 2px 8px -2px hsl(210 50% 15% / 0.08);
+    --shadow-medium: 0 4px 16px -4px hsl(210 50% 15% / 0.12);
+    --shadow-large: 0 8px 32px -8px hsl(210 50% 15% / 0.16);
+    --shadow-glow: 0 0 24px hsl(207 87% 34% / 0.15);
+
+    /* Sidebar */
+    --sidebar-background: 210 33% 99%;
+    --sidebar-foreground: 210 50% 15%;
+    --sidebar-primary: 207 87% 34%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 200 60% 94%;
+    --sidebar-accent-foreground: 207 87% 34%;
+    --sidebar-border: 210 25% 90%;
+    --sidebar-ring: 207 87% 34%;
+  }
+
+  .dark {
+    --background: 210 50% 8%;
+    --foreground: 210 20% 95%;
+
+    --card: 210 45% 12%;
+    --card-foreground: 210 20% 95%;
+
+    --popover: 210 45% 12%;
+    --popover-foreground: 210 20% 95%;
+
+    --primary: 200 70% 60%;
+    --primary-foreground: 210 50% 8%;
+
+    --secondary: 210 40% 20%;
+    --secondary-foreground: 210 20% 95%;
+
+    --accent: 150 40% 20%;
+    --accent-foreground: 140 40% 85%;
+
+    --muted: 210 40% 18%;
+    --muted-foreground: 210 15% 60%;
+
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 40% 20%;
+    --input: 210 40% 20%;
+    --ring: 200 70% 60%;
+
+    --sidebar-background: 210 50% 8%;
+    --sidebar-foreground: 210 20% 95%;
+    --sidebar-primary: 200 70% 60%;
+    --sidebar-primary-foreground: 210 50% 8%;
+    --sidebar-accent: 210 40% 20%;
+    --sidebar-accent-foreground: 210 20% 95%;
+    --sidebar-border: 210 40% 20%;
+    --sidebar-ring: 200 70% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .container-therapeutic {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .card-therapeutic {
+    @apply bg-card rounded-xl shadow-soft border border-border/50 transition-all duration-200;
+  }
+
+  .card-therapeutic:hover {
+    @apply shadow-medium;
+  }
+
+  .btn-primary-therapeutic {
+    @apply bg-primary text-primary-foreground font-medium rounded-lg px-6 py-3 
+           shadow-soft transition-all duration-200 
+           hover:shadow-medium hover:brightness-110 
+           active:scale-[0.98];
+  }
+
+  .btn-secondary-therapeutic {
+    @apply bg-secondary text-secondary-foreground font-medium rounded-lg px-6 py-3 
+           border border-border/50 transition-all duration-200 
+           hover:bg-secondary/80 hover:shadow-soft 
+           active:scale-[0.98];
+  }
+
+  .btn-accent-therapeutic {
+    @apply bg-accent text-accent-foreground font-medium rounded-lg px-6 py-3 
+           border border-accent-foreground/10 transition-all duration-200 
+           hover:bg-accent/80 hover:shadow-soft 
+           active:scale-[0.98];
+  }
+
+  .input-therapeutic {
+    @apply w-full px-4 py-3 rounded-lg border border-border bg-background 
+           text-foreground placeholder:text-muted-foreground
+           focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
+           transition-all duration-200;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold text-foreground tracking-tight;
+  }
+
+  .section-subtitle {
+    @apply text-lg text-muted-foreground max-w-2xl;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.3s ease-out forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slide-in-right 0.4s ease-out forwards;
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+  }
+
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes scale-in {
+  from { 
+    opacity: 0; 
+    transform: scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+@keyframes slide-in-right {
+  from { 
+    opacity: 0; 
+    transform: translateX(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { 
+    opacity: 1; 
+  }
+  50% { 
+    opacity: 0.7; 
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-muted/50 rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/30;
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+}

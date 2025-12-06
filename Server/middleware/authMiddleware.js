@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 // This middleware function runs BEFORE your route handler
 module.exports = function (req, res, next) {
   // 1. Get the token from the header
-  const token = req.header("auth-token");
+  const token = req.header("token");
 
   // 2. Check if token exists
   if (!token) {

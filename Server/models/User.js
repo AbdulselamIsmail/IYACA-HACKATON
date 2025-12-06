@@ -34,6 +34,7 @@ const userSchema = new mongoose.Schema({
     // validation: Only required if role is patient? For a hackathon, keep it simple:
     required: false,
   },
+  isVerified: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model("User", userSchema);

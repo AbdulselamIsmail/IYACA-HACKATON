@@ -4,6 +4,53 @@ const Appointment = require("../models/Appointment");
 const User = require("../models/User");
 const auth = require("../middleware/authMiddleware"); // <--- IMPORT MIDDLEWARE
 
+// ==========================================
+// 1. GET USER PROFILE (NEW)
+// @route   GET /api/patient/me
+// @desc    Get current logged in user's info
+// ==========================================
+router.get("/me", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// ==========================================
+// 2. GET MY APPOINTMENTS (UPDATED)
+// @route   GET /api/patient/appointments
+// @desc    Get appointments formatted for Client Dashboard
+// ==========================================
+router.get("/appointments", auth, async (req, res) => {
+  try {
+    // 1. Find appointments for this patient
+    const appointments = await Appointment.find({ patientId: req.user.id })
+      .populate("doctorId", "name email sex profilePicture specialty") // Get doctor details
+      .sort({ date: 1 }); // Sort by date (nearest first)
+
+    // 2. Transform data to match Frontend expectations
+    // Frontend expects: { id, dateTime, therapist: { name, profilePic... }, meetingLink }
+    const formattedAppointments = appointments.map((apt) => ({
+      id: apt._id,
+      dateTime: apt.date, // Frontend expects 'dateTime', DB has 'date'
+      status: apt.status,
+      meetingLink: apt.meetingLink,
+      therapist: apt.doctorId, // Frontend expects 'therapist', DB has 'doctorId'
+    }));
+
+    res.json(formattedAppointments);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
 // @route   GET /api/patient/available-slots
 // @desc    Get slots with optional filters (Date & Sex)
 // @access  Protected (User must be logged in)
@@ -76,6 +123,24 @@ router.post("/book", auth, async (req, res) => {
     await appointment.save();
 
     res.json({ msg: "Booking Successful", appointment });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route   GET /api/patient/therapists
+// @desc    Get all VERIFIED doctors for the directory
+// @access  Public (or Protected, depending on preference)
+router.get("/therapists", async (req, res) => {
+  try {
+    // Find users who are doctors AND are verified
+    // We exclude the password field for security
+    const therapists = await User.find({ role: "doctor", isVerified: true })
+      .select("-password")
+      .sort({ createdAt: -1 });
+
+    res.json(therapists);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

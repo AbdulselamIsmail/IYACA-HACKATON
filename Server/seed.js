@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const bcrypt = require("bcryptjs"); // <--- 1. Import bcryptjs
+const bcrypt = require("bcryptjs");
 const User = require("./models/User");
 const Appointment = require("./models/Appointment");
 const connectDB = require("./config/db");
@@ -8,123 +8,150 @@ const connectDB = require("./config/db");
 dotenv.config();
 connectDB();
 
-const importData = async () => {
+const seedData = async () => {
   try {
-    console.log("🔥 Destroying old data...");
+    console.log("🔥 Eski veriler temizleniyor...");
     await Appointment.deleteMany();
     await User.deleteMany();
 
-    console.log("🔒 Generating Password Hash...");
-
-    // --- 2. Generate the hash ONCE for password "StrongPassword123!" ---
+    console.log("🔒 Şifreler oluşturuluyor...");
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash("StrongPassword123!", salt);
+    const hashedPassword = await bcrypt.hash("StrongPassword123!", salt); // Şifre: 123
 
-    console.log("🌱 Creating Users...");
+    console.log("🌱 Kullanıcılar oluşturuluyor...");
 
-    // --- 3. Create 3 Doctors (Use the hashed variable) ---
-    const doctors = await User.create([
-      {
-        name: "Dr. Gregory House",
-        email: "house@hospital.com",
-        password: hashedPassword, // <--- Using the hash
-        role: "doctor",
-        sex: "male",
-        profilePicture: "https://i.pravatar.cc/150?img=11",
-      },
-      {
-        name: "Dr. Lisa Cuddy",
-        email: "cuddy@hospital.com",
-        password: hashedPassword, // <--- Using the hash
-        role: "doctor",
-        sex: "female",
-        profilePicture: "https://i.pravatar.cc/150?img=5",
-      },
-      {
-        name: "Dr. James Wilson",
-        email: "wilson@hospital.com",
-        password: hashedPassword, // <--- Using the hash
-        role: "doctor",
-        sex: "male",
-        profilePicture: "https://i.pravatar.cc/150?img=8",
-      },
-    ]);
-
-    // --- 4. Create 3 Patients (Use the hashed variable) ---
-    const patients = await User.create([
-      {
-        name: "Marty McFly",
-        email: "marty@future.com",
-        password: hashedPassword, // <--- Using the hash
-        role: "patient",
-        sex: "male",
-        age: 17,
-      },
-      {
-        name: "Sarah Connor",
-        email: "sarah@skynet.com",
-        password: hashedPassword, // <--- Using the hash
-        role: "patient",
-        sex: "female",
-        age: 29,
-      },
-      {
-        name: "Tony Stark",
-        email: "tony@avengers.com",
-        password: hashedPassword, // <--- Using the hash
-        role: "patient",
-        sex: "male",
-        age: 45,
-      },
-    ]);
-
-    console.log(
-      `✅ Created ${doctors.length} Doctors and ${patients.length} Patients.`
-    );
-    console.log("🌱 Creating 5 Appointments per Doctor...");
-
-    // Helper to generate a date relative to today
-    const getDate = (daysAdd, hour) => {
-      const d = new Date();
-      d.setDate(d.getDate() + daysAdd);
-      d.setHours(hour, 0, 0, 0);
-      return d;
-    };
-
-    const timeOffsets = [
-      { days: 0, hour: 9 }, // Today Morning
-      { days: 0, hour: 14 }, // Today Afternoon
-      { days: 1, hour: 10 }, // Tomorrow Morning
-      { days: 1, hour: 16 }, // Tomorrow Afternoon
-      { days: 2, hour: 11 }, // Day After
+    // --- 1. Verified Doctors (Real Turkish Names) ---
+    const verifiedDoctorNames = [
+      { name: "Dr. Ahmet Yılmaz", sex: "male" },
+      { name: "Dr. Zeynep Demir", sex: "female" },
+      { name: "Dr. Mehmet Kaya", sex: "male" },
+      { name: "Dr. Elif Çelik", sex: "female" },
+      { name: "Dr. Mustafa Şahin", sex: "male" },
+      { name: "Dr. Ayşe Yıldız", sex: "female" },
+      { name: "Dr. Emre Öztürk", sex: "male" },
+      { name: "Dr. Burcu Arslan", sex: "female" },
+      { name: "Dr. Volkan Polat", sex: "male" },
+      { name: "Dr. Hande Erçel", sex: "female" },
     ];
 
-    let totalSlots = 0;
+    const verifiedDoctorsData = verifiedDoctorNames.map((doc, index) => ({
+      name: doc.name,
+      email: `doktor${index + 1}@hastane.com`,
+      password: hashedPassword,
+      role: "doctor",
+      sex: doc.sex,
+      isVerified: true, // ✅ ONAYLI
+      school: "İstanbul Üniversitesi Cerrahpaşa Tıp Fakültesi",
+      profilePicture: `https://i.pravatar.cc/150?img=${index + 10}`,
+    }));
 
-    for (const doc of doctors) {
+    const createdVerifiedDocs = await User.insertMany(verifiedDoctorsData);
+
+    // --- 2. Unverified Doctors (For Demo Purposes) ---
+    const unverifiedDoctorNames = [
+      { name: "Dr. Caner Erkin", sex: "male" },
+      { name: "Dr. Gamze Durmaz", sex: "female" },
+      { name: "Dr. Ozan Tufan", sex: "male" },
+    ];
+
+    const unverifiedDoctorsData = unverifiedDoctorNames.map((doc, index) => ({
+      name: doc.name,
+      email: `yeni${index + 1}@hastane.com`,
+      password: hashedPassword,
+      role: "doctor",
+      sex: doc.sex,
+      isVerified: false, // ❌ ONAYSIZ (Lock Screen Demo)
+      school: "Hacettepe Tıp Fakültesi",
+      profilePicture: `https://i.pravatar.cc/150?img=${index + 30}`,
+    }));
+
+    await User.insertMany(unverifiedDoctorsData);
+
+    // --- 3. Patients (Real Turkish Names) ---
+    const patientNames = [
+      { name: "Ali Vural", sex: "male" },
+      { name: "Selin Aksoy", sex: "female" },
+      { name: "Mert Koç", sex: "male" },
+      { name: "Ceren Yılmaz", sex: "female" },
+      { name: "Kerem Bursin", sex: "male" },
+      { name: "Leyla Tanlar", sex: "female" },
+      { name: "Murat Boz", sex: "male" },
+      { name: "Hadise Açıkgöz", sex: "female" },
+      { name: "Acun Ilıcalı", sex: "male" },
+      { name: "Seda Sayan", sex: "female" },
+    ];
+
+    const patientsData = patientNames.map((p, index) => ({
+      name: p.name,
+      email: `hasta${index + 1}@test.com`,
+      password: hashedPassword,
+      role: "patient",
+      sex: p.sex,
+      age: 20 + index + 5,
+    }));
+
+    await User.insertMany(patientsData);
+
+    console.log(
+      "🌱 Randevular oluşturuluyor (Sadece Onaylı Doktorlar İçin)..."
+    );
+
+    // --- 4. Create Slots ONLY for Verified Doctors ---
+    const appointments = [];
+    const today = new Date();
+    today.setHours(9, 0, 0, 0); // Start at 9:00 AM
+
+    for (const doc of createdVerifiedDocs) {
+      // Create 5 slots for each verified doctor
+      // Slot 1: Today 09:00
+      // Slot 2: Today 14:00
+      // Slot 3: Tomorrow 10:00
+      // Slot 4: Tomorrow 15:00
+      // Slot 5: Day After Tomorrow 11:00
+
+      const timeOffsets = [
+        { days: 0, hour: 9 },
+        { days: 0, hour: 14 },
+        { days: 1, hour: 10 },
+        { days: 1, hour: 15 },
+        { days: 2, hour: 11 },
+      ];
+
       for (const time of timeOffsets) {
-        await Appointment.create({
+        const slotDate = new Date(today);
+        slotDate.setDate(today.getDate() + time.days);
+        slotDate.setHours(time.hour, 0, 0, 0);
+
+        appointments.push({
           doctorId: doc._id,
-          date: getDate(time.days, time.hour),
+          date: slotDate,
           status: "available",
         });
-        totalSlots++;
       }
     }
 
-    console.log(`✅ Successfully created ${totalSlots} Available Slots.`);
-    console.log("-----------------------------------------");
-    console.log("🧪 TEST DATA INFO:");
-    console.log(`Doctors: ${doctors.map((d) => d.name).join(", ")}`);
-    console.log(`Patients: ${patients.map((p) => p.name).join(", ")}`);
-    console.log(`Password for all: StrongPassword123!`);
-    console.log("-----------------------------------------");
+    await Appointment.insertMany(appointments);
+
+    console.log("---------------------------------------");
+    console.log(`✅ Veritabanı Başarıyla Hazırlandı!`);
+    console.log(
+      `👨‍⚕️ Onaylı Doktorlar: 10 (Giriş: doktor1@hastane.com ... doktor10@hastane.com)`
+    );
+    console.log(
+      `🕵️ Onaysız Doktorlar: 3 (Giriş: yeni1@hastane.com ... yeni3@hastane.com)`
+    );
+    console.log(
+      `🤒 Hastalar: 10 (Giriş: hasta1@test.com ... hasta10@test.com)`
+    );
+    console.log(`📅 Oluşturulan Randevu Slotu: ${appointments.length}`);
+    console.log(`🔑 Ortak Şifre: StrongPassword123!`);
+    console.log("---------------------------------------");
 
     process.exit();
   } catch (error) {
-    console.error(`❌ Error: ${error.message}`);
+    console.error(`❌ Hata: ${error.message}`);
     process.exit(1);
   }
 };
 
-importData();
+seedData();
