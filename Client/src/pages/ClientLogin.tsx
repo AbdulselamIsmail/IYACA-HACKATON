@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Heart, Mail, Lock, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
-import api from "@/lib/api"; // The file we just made
 
 const ClientLogin = () => {
   const navigate = useNavigate();
@@ -21,25 +20,38 @@ const ClientLogin = () => {
     setIsLoading(true);
 
     try {
-      // 1. Send request to backend
-      const { data } = await api.post("/auth/login", { email, password });
+      // 1. Send Login Request using fetch
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-      // 2. Save the token (Crucial!)
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.msg || "Giriş başarısız oldu.");
+      }
+
+      // 2. Save Token AND Role
       localStorage.setItem("token", data.token);
+
+      // We manually set the role here because we know this is the Client Login page
+      // Even if the backend sends it, forcing it ensures the frontend routing works.
+      localStorage.setItem("role", "patient");
 
       // 3. Success Feedback
       toast.success("Giriş başarılı! Yönlendiriliyorsunuz...");
 
-      // 4. Redirect
+      // 4. Redirect to Client Dashboard
       setTimeout(() => {
+        // NOTE: Make sure this route matches your App.tsx (e.g., /dashboard or /dashboard/client)
         navigate("/dashboard/client");
       }, 500);
     } catch (error: any) {
       console.error(error);
-      // Show the specific error message from backend (e.g., "Wrong password")
       toast.error(
-        error.response?.data?.msg ||
-          "Giriş başarısız. Bilgilerinizi kontrol edin."
+        error.message || "Giriş başarısız. Bilgilerinizi kontrol edin."
       );
     } finally {
       setIsLoading(false);
@@ -60,7 +72,6 @@ const ClientLogin = () => {
         {/* Left Side - Form */}
         <div className="flex w-full flex-col justify-center px-4 py-12 lg:w-1/2 lg:px-16">
           <div className="mx-auto w-full max-w-md">
-            {/* Back Link */}
             <Link
               to="/"
               className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -69,7 +80,6 @@ const ClientLogin = () => {
               Ana Sayfaya Dön
             </Link>
 
-            {/* Logo */}
             <div className="mb-8">
               <Link to="/" className="flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-soft">
@@ -81,7 +91,6 @@ const ClientLogin = () => {
               </Link>
             </div>
 
-            {/* Title */}
             <div className="mb-8">
               <h1 className="text-2xl font-bold text-foreground">
                 Danışan Girişi
@@ -91,7 +100,6 @@ const ClientLogin = () => {
               </p>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <Label htmlFor="email">E-posta Adresi</Label>
@@ -103,8 +111,8 @@ const ClientLogin = () => {
                     placeholder="ornek@email.com"
                     className="pl-10"
                     required
-                    value={email} // <--- ADD THIS
-                    onChange={(e) => setEmail(e.target.value)} // <--- ADD THIS
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -119,16 +127,13 @@ const ClientLogin = () => {
                     placeholder="••••••••"
                     className="pl-10 pr-10"
                     required
-                    value={password} // <--- ADD THIS
-                    onChange={(e) => setPassword(e.target.value)} // <--- ADD THIS
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    aria-label={
-                      showPassword ? "Şifreyi gizle" : "Şifreyi göster"
-                    }
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -168,7 +173,6 @@ const ClientLogin = () => {
               </Button>
             </form>
 
-            {/* Divider */}
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border" />
@@ -180,7 +184,6 @@ const ClientLogin = () => {
               </div>
             </div>
 
-            {/* e-Devlet */}
             <Button variant="edevlet" className="w-full" size="lg" asChild>
               <Link to="/login/edevlet">
                 <img
@@ -195,7 +198,6 @@ const ClientLogin = () => {
               * e-Devlet entegrasyonu backend gerektirir
             </p>
 
-            {/* Register Link */}
             <p className="mt-8 text-center text-sm text-muted-foreground">
               Hesabınız yok mu?{" "}
               <Link

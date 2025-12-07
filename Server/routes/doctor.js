@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Appointment = require("../models/Appointment");
 const auth = require("../middleware/authMiddleware");
+const User = require("../models/User"); // <--- THIS LINE IS CRITICAL
 
 // --- MIDDLEWARE: Check if user is actually a doctor ---
 const isDoctor = (req, res, next) => {
@@ -29,6 +30,26 @@ router.post("/add-slot", auth, isDoctor, async (req, res) => {
     await newSlot.save();
 
     res.json({ msg: "Slot created successfully", slot: newSlot });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// ==========================================
+// 1. GET DOCTOR PROFILE (NEW)
+// @route   GET /api/doctor/me
+// ==========================================
+router.get("/me", auth, async (req, res) => {
+  try {
+    // Find the user by ID, exclude password
+    const doctor = await User.findById(req.user.id).select("-password");
+
+    if (!doctor) {
+      return res.status(404).json({ msg: "Doctor not found" });
+    }
+
+    res.json(doctor);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

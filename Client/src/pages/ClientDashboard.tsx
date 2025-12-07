@@ -45,7 +45,7 @@ interface Appointment {
   therapistId: string;
   therapist: Therapist;
   dateTime: string; // ISO String from DB
-  status: "confirmed" | "pending" | "cancelled" | "completed";
+  status: "confirmed" | "pending" | "cancelled" | "completed" | "booked";
   meetingLink?: string; // The REAL link from your DB
 }
 
@@ -385,11 +385,21 @@ const ClientDashboard = () => {
                 {appointments.length > 0 ? (
                   appointments.slice(0, 5).map((appointment) => {
                     const { date, time } = formatDateTime(appointment.dateTime);
+
+                    // Check if the appointment is active (confirmed/booked) AND has a link
+                    const isConfirmed =
+                      appointment.status === "confirmed" ||
+                      appointment.status === "booked";
+                    const hasLink =
+                      appointment.meetingLink &&
+                      appointment.meetingLink.length > 0;
+
                     return (
                       <div
                         key={appointment.id}
                         className="flex flex-col gap-4 rounded-xl border bg-muted/30 p-4 transition-colors hover:bg-muted/50 md:flex-row md:items-center md:justify-between"
                       >
+                        {/* Therapist Info Section */}
                         <div className="flex items-center gap-4">
                           <img
                             src={
@@ -417,22 +427,32 @@ const ClientDashboard = () => {
                           </div>
                         </div>
 
+                        {/* Status & Actions Section */}
                         <div className="flex items-center justify-between gap-3 md:justify-end">
                           {getStatusBadge(appointment.status)}
 
                           {/* Action Buttons */}
                           <div className="flex gap-2">
-                            {appointment.status === "confirmed" && (
+                            {/* JOIN BUTTON (Updated) */}
+                            {isConfirmed && hasLink && (
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="hidden md:flex"
-                                onClick={() => openVideoLobby(appointment)}
+                                className="hidden md:flex bg-primary/10 hover:bg-primary/20 text-primary border-primary/20"
+                                asChild // Allows the <a> tag to behave like a button
                               >
-                                <Video className="mr-2 h-3 w-3" />
-                                Katıl
+                                <a
+                                  href={appointment.meetingLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <Video className="mr-2 h-3 w-3" />
+                                  Katıl
+                                </a>
                               </Button>
                             )}
+
+                            {/* CANCEL BUTTON */}
                             {appointment.status !== "cancelled" && (
                               <Button
                                 variant="ghost"
@@ -452,6 +472,7 @@ const ClientDashboard = () => {
                     );
                   })
                 ) : (
+                  // Empty State
                   <div className="py-12 text-center">
                     <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
                       <Calendar className="h-8 w-8 text-muted-foreground/50" />

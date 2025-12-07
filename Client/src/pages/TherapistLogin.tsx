@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Heart, Mail, Lock, ArrowLeft, Eye, EyeOff, Users } from "lucide-react";
 import { toast } from "sonner";
-import api from "@/lib/api";
 
 const TherapistLogin = () => {
   const navigate = useNavigate();
@@ -21,18 +20,31 @@ const TherapistLogin = () => {
     setIsLoading(true);
 
     try {
-      // 1. Send Login Request
-      const { data } = await api.post("/auth/login", { email, password });
+      // 1. Send Login Request using fetch
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-      // 2. Security Check: Is this user actually a Therapist?
-      if (data.role !== "doctor") {
-        toast.error("Bu panel sadece terapistler içindir.");
-        setIsLoading(false);
-        return;
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.msg || "Giriş başarısız oldu.");
       }
 
-      // 3. Save Token
+      // 2. Security Check: Is this user actually a Doctor?
+      // Note: This relies on your backend sending { token: "...", role: "doctor" }
+      // If your backend doesn't send 'role', remove the 'if' check below.
+      if (data.role && data.role !== "doctor") {
+        throw new Error("Bu panel sadece terapistler içindir.");
+      }
+
+      // 3. Save Token AND Role
       localStorage.setItem("token", data.token);
+
+      // Explicitly save the role as 'doctor' so the Navbar knows where to link
+      localStorage.setItem("role", "doctor");
 
       toast.success("Giriş başarılı! Yönlendiriliyorsunuz...");
 
@@ -42,7 +54,7 @@ const TherapistLogin = () => {
       }, 500);
     } catch (error: any) {
       console.error(error);
-      toast.error(error.response?.data?.msg || "Giriş başarısız.");
+      toast.error(error.message || "Giriş başarısız.");
     } finally {
       setIsLoading(false);
     }
@@ -81,7 +93,6 @@ const TherapistLogin = () => {
         {/* Right Side - Form */}
         <div className="flex w-full flex-col justify-center px-4 py-12 lg:w-1/2 lg:px-16">
           <div className="mx-auto w-full max-w-md">
-            {/* Back Link */}
             <Link
               to="/"
               className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -90,7 +101,6 @@ const TherapistLogin = () => {
               Ana Sayfaya Dön
             </Link>
 
-            {/* Logo */}
             <div className="mb-8">
               <Link to="/" className="flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-soft">
@@ -102,7 +112,6 @@ const TherapistLogin = () => {
               </Link>
             </div>
 
-            {/* Title */}
             <div className="mb-8">
               <h1 className="text-2xl font-bold text-foreground">
                 Terapist Girişi
@@ -112,7 +121,6 @@ const TherapistLogin = () => {
               </p>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <Label htmlFor="email">E-posta Adresi</Label>
@@ -121,9 +129,10 @@ const TherapistLogin = () => {
                   <Input
                     id="email"
                     type="email"
-                    // ... other props ...
-                    value={email} // <--- ADD THIS
-                    onChange={(e) => setEmail(e.target.value)} // <--- ADD THIS
+                    className="pl-10"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -134,17 +143,16 @@ const TherapistLogin = () => {
                   <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     id="password"
-                    // ... other props ...
-                    value={password} // <--- ADD THIS
-                    onChange={(e) => setPassword(e.target.value)} // <--- ADD THIS
+                    type={showPassword ? "text" : "password"}
+                    className="pl-10 pr-10"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    aria-label={
-                      showPassword ? "Şifreyi gizle" : "Şifreyi göster"
-                    }
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -184,7 +192,6 @@ const TherapistLogin = () => {
               </Button>
             </form>
 
-            {/* Register Link */}
             <p className="mt-8 text-center text-sm text-muted-foreground">
               Hesabınız yok mu?{" "}
               <Link

@@ -23,7 +23,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import api from "@/lib/api";
 
 // Define Types for our Data
 interface Therapist {
@@ -57,13 +56,43 @@ const TherapistDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. Get Therapist Profile
-        const userRes = await api.get("/auth/user");
-        setTherapist(userRes.data);
+        setIsLoading(true);
 
-        // 2. Get Appointments
-        const slotsRes = await api.get("/doctor/my-slots");
-        setAppointments(slotsRes.data);
+        // 1. Get Token
+        const token = localStorage.getItem("token");
+        if (!token) {
+          // Redirect to login if needed
+          console.error("No token found");
+          return;
+        }
+
+        const headers = {
+          "Content-Type": "application/json",
+          token: token, // <--- The Fix: Sending the token manually
+        };
+
+        // 2. Fetch Doctor Profile & Slots
+        // We use our new /api/doctor/me route instead of /auth/user
+        const [userRes, slotsRes] = await Promise.all([
+          fetch("/api/doctor/me", { headers }),
+          fetch("/api/doctor/my-slots", { headers }),
+        ]);
+
+        if (userRes.status === 401 || slotsRes.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "/login"; // Force logout
+          return;
+        }
+
+        if (!userRes.ok || !slotsRes.ok) {
+          throw new Error("Veri çekilemedi");
+        }
+
+        const userData = await userRes.json();
+        const slotsData = await slotsRes.json();
+
+        setTherapist(userData);
+        setAppointments(slotsData);
       } catch (error) {
         console.error("Dashboard Data Error:", error);
       } finally {
