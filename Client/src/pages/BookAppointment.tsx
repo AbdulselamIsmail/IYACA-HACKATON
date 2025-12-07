@@ -29,7 +29,6 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
-import api from "@/lib/api";
 import { useNavigate } from "react-router-dom";
 
 // Types matching your Backend Response
@@ -53,7 +52,7 @@ const BookAppointment = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSex, setSelectedSex] = useState<string>("all");
-  const [selectedDate, setSelectedDate] = useState<string>(""); // <--- NEW STATE
+  const [selectedDate, setSelectedDate] = useState<string>("");
 
   // Real Data State
   const [slots, setSlots] = useState<Slot[]>([]);
@@ -66,11 +65,36 @@ const BookAppointment = () => {
   >("list");
   const [isBooking, setIsBooking] = useState(false);
 
-  // --- 1. FETCH REAL SLOTS ---
+  // --- 1. FETCH REAL SLOTS (CORRECTED) ---
   useEffect(() => {
     const fetchSlots = async () => {
       try {
-        const { data } = await api.get("/patient/available-slots");
+        // 1. Get Token
+        const token = localStorage.getItem("token");
+        if (!token) {
+          toast.error("Randevu almak için giriş yapmalısınız.");
+          navigate("/login/client");
+          return;
+        }
+
+        // 2. Fetch with Headers
+        const res = await fetch("/api/patient/available-slots", {
+          headers: {
+            "Content-Type": "application/json",
+            token: token, // <--- FIX: Send token manually
+          },
+        });
+
+        if (res.status === 401) {
+          localStorage.removeItem("token");
+          toast.error("Oturum süreniz doldu.");
+          navigate("/login/client");
+          return;
+        }
+
+        if (!res.ok) throw new Error("Veri çekilemedi");
+
+        const data = await res.json();
         setSlots(data);
       } catch (error) {
         console.error("Error fetching slots:", error);
@@ -80,11 +104,14 @@ const BookAppointment = () => {
       }
     };
     fetchSlots();
-  }, []);
+  }, [navigate]);
 
-  // --- 2. FILTER LOGIC (Updated with Date) ---
+  // --- 2. FILTER LOGIC ---
   const filteredSlots = slots.filter((slot) => {
-    const docName = slot.doctorId.name.toLowerCase();
+    // Safety check in case doctorId is null (deleted doctor)
+    if (!slot.doctorId) return false;
+
+    const docName = slot.doctorId.name?.toLowerCase() || "";
     const searchLower = searchTerm.toLowerCase();
 
     // 1. Filter by Search (Doctor Name)
@@ -94,10 +121,9 @@ const BookAppointment = () => {
     const matchesSex =
       selectedSex === "all" || slot.doctorId.sex === selectedSex;
 
-    // 3. Filter by Date (NEW)
+    // 3. Filter by Date
     let matchesDate = true;
     if (selectedDate) {
-      // Convert slot ISO string (2025-12-12T09:00...) to YYYY-MM-DD
       const slotDateString = new Date(slot.date).toISOString().split("T")[0];
       matchesDate = slotDateString === selectedDate;
     }
@@ -105,7 +131,7 @@ const BookAppointment = () => {
     return matchesSearch && matchesSex && matchesDate;
   });
 
-  // --- 3. BOOKING HANDLERS ---
+  // --- 3. BOOKING HANDLERS (CORRECTED) ---
   const handleSelectSlot = (slot: Slot) => {
     setSelectedSlot(slot);
     setBookingStep("confirm");
@@ -116,14 +142,34 @@ const BookAppointment = () => {
     setIsBooking(true);
 
     try {
-      await api.post("/patient/book", {
-        slotId: selectedSlot._id,
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login/client");
+        return;
+      }
+
+      // Send Request with Token
+      const res = await fetch("/api/patient/book", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          token: token, // <--- FIX: Send token manually
+        },
+        body: JSON.stringify({
+          slotId: selectedSlot._id,
+        }),
       });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.msg || "Randevu alınamadı.");
+      }
 
       setBookingStep("success");
       toast.success("Randevu başarıyla alındı!");
     } catch (error: any) {
-      toast.error(error.response?.data?.msg || "Randevu alınamadı.");
+      toast.error(error.message || "Randevu alınamadı.");
       setBookingStep("list");
     } finally {
       setIsBooking(false);
@@ -133,6 +179,7 @@ const BookAppointment = () => {
   const handleReset = () => {
     setSelectedSlot(null);
     setBookingStep("list");
+    // Refresh to remove the booked slot from the list
     window.location.reload();
   };
 
@@ -159,7 +206,7 @@ const BookAppointment = () => {
       </Helmet>
 
       <Layout>
-        <div className="bg-gradient-to-b from-secondary/50 to-background py-12 md:py-16">
+        <div className="bg-gradient-to-b from-secondary/50 to-background py-12 md:py-16 min-h-screen">
           <div className="container-therapeutic">
             {/* Header */}
             <div className="mb-8 text-center">
@@ -170,7 +217,7 @@ const BookAppointment = () => {
             </div>
 
             {/* Filters */}
-            <div className="mb-8 rounded-xl bg-card p-4 shadow-soft md:p-6">
+            <div className="mb-8 rounded-xl bg-card p-4 shadow-soft md:p-6 border border-border/50">
               <div className="flex flex-col gap-4 md:flex-row md:items-end">
                 {/* Search Bar */}
                 <div className="flex-1">
@@ -189,7 +236,7 @@ const BookAppointment = () => {
                   </div>
                 </div>
 
-                {/* Date Filter (NEW) */}
+                {/* Date Filter */}
                 <div className="w-full md:w-48">
                   <Label htmlFor="date" className="mb-1.5 block text-sm">
                     Tarih
@@ -238,7 +285,7 @@ const BookAppointment = () => {
                 <Loader2 className="h-10 w-10 animate-spin text-primary" />
               </div>
             ) : filteredSlots.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground bg-muted/20 rounded-xl p-8">
+              <div className="text-center py-12 text-muted-foreground bg-muted/20 rounded-xl p-8 border border-border/50">
                 <Calendar className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
                 <p>Aradığınız kriterlere uygun randevu bulunamadı.</p>
                 {selectedDate && (
@@ -260,7 +307,7 @@ const BookAppointment = () => {
                         <img
                           src={
                             slot.doctorId.profilePicture ||
-                            "https://i.pravatar.cc/150?img=11"
+                            "https://github.com/shadcn.png"
                           }
                           alt={slot.doctorId.name}
                           className="h-16 w-16 rounded-xl object-cover shadow-sm bg-gray-100"
@@ -330,7 +377,7 @@ const BookAppointment = () => {
                       <img
                         src={
                           selectedSlot.doctorId.profilePicture ||
-                          "https://i.pravatar.cc/150?img=11"
+                          "https://github.com/shadcn.png"
                         }
                         className="h-12 w-12 rounded-full object-cover"
                       />
