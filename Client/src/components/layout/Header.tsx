@@ -1,12 +1,27 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Heart, User, Calendar, BookOpen } from "lucide-react";
+import {
+  Menu,
+  X,
+  Heart,
+  User,
+  Calendar,
+  BookOpen,
+  LogOut,
+  LayoutDashboard,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // 1. Check Auth Status
+  const token = localStorage.getItem("token");
+  const userRole = localStorage.getItem("role"); // "doctor" or "patient"
+  const isLoggedIn = !!token;
 
   const navigation = [
     { name: "Ana Sayfa", href: "/", icon: Heart },
@@ -17,18 +32,35 @@ const Header = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
+  // 2. Determine Dashboard Link based on Role
+  const getDashboardLink = () => {
+    return userRole === "doctor" ? "/dashboard/therapist" : "/dashboard/client";
+  };
+
+  // 3. Logout Function
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    // We force a reload or navigate to ensure the UI updates immediately
+    navigate("/");
+    window.location.reload();
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <nav className="container-therapeutic" aria-label="Ana navigasyon">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="flex items-center gap-2 transition-opacity hover:opacity-80"
             aria-label="VolunTherapy Ana Sayfa"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-soft">
-              <Heart className="h-5 w-5 text-primary-foreground" aria-hidden="true" />
+              <Heart
+                className="h-5 w-5 text-primary-foreground"
+                aria-hidden="true"
+              />
             </div>
             <span className="text-xl font-bold text-foreground">
               Volun<span className="text-primary">Therapy</span>
@@ -54,14 +86,38 @@ const Header = () => {
             ))}
           </div>
 
-          {/* Desktop CTA Buttons */}
+          {/* Desktop CTA Buttons (SMART LOGIC) */}
           <div className="hidden md:flex md:items-center md:gap-3">
-            <Button variant="therapeutic-secondary" size="sm" asChild>
-              <Link to="/login/client">Danışan Girişi</Link>
-            </Button>
-            <Button variant="therapeutic" size="sm" asChild>
-              <Link to="/login/therapist">Terapist Girişi</Link>
-            </Button>
+            {isLoggedIn ? (
+              // LOGGED IN STATE
+              <>
+                <Button variant="outline" size="sm" asChild className="gap-2">
+                  <Link to={getDashboardLink()}>
+                    <LayoutDashboard className="h-4 w-4" />
+                    Panelim
+                  </Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="gap-2 text-muted-foreground hover:text-destructive"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Çıkış Yap
+                </Button>
+              </>
+            ) : (
+              // LOGGED OUT STATE
+              <>
+                <Button variant="therapeutic-secondary" size="sm" asChild>
+                  <Link to="/login/client">Danışan Girişi</Link>
+                </Button>
+                <Button variant="therapeutic" size="sm" asChild>
+                  <Link to="/login/therapist">Terapist Girişi</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -106,17 +162,53 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
-            <div className="flex flex-col gap-2 pt-4">
-              <Button variant="therapeutic-secondary" asChild>
-                <Link to="/login/client" onClick={() => setIsMenuOpen(false)}>
-                  Danışan Girişi
-                </Link>
-              </Button>
-              <Button variant="therapeutic" asChild>
-                <Link to="/login/therapist" onClick={() => setIsMenuOpen(false)}>
-                  Terapist Girişi
-                </Link>
-              </Button>
+
+            <div className="flex flex-col gap-2 pt-4 border-t mt-2">
+              {isLoggedIn ? (
+                // MOBILE LOGGED IN
+                <>
+                  <Button variant="outline" asChild className="justify-start">
+                    <Link
+                      to={getDashboardLink()}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      Panelim
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Çıkış Yap
+                  </Button>
+                </>
+              ) : (
+                // MOBILE LOGGED OUT
+                <>
+                  <Button variant="therapeutic-secondary" asChild>
+                    <Link
+                      to="/login/client"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Danışan Girişi
+                    </Link>
+                  </Button>
+                  <Button variant="therapeutic" asChild>
+                    <Link
+                      to="/login/therapist"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Terapist Girişi
+                    </Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
